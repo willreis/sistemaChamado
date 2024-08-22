@@ -1,0 +1,9 @@
+[
+    {
+        "id": 1,
+        "nif": 3222456,
+        "nome": "Vinícius Severiano",
+        "local": "Senai 123",
+        "tipoConta": "Administrador"
+    }
+]

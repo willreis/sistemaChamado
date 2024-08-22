@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "headerIcon": "support_agent",
+    "title": "Abrir Chamado",
+    "text": "Precisa de ajuda? Clique no botão abaixo para abrir um novo chamado e nossa equipe de suporte entrará em contato o mais breve possível.",
+    "buttonText": "Novo Chamado",
+    "headerColor": "#007bff",
+    "buttonColor": "#007bff",
+    "link": "/abrirChamado"
+  },
+  {
+    "id": 2,
+    "headerIcon": "folder_open",
+    "title": "Histórico de Chamado",
+    "text": "Visualize o histórico de chamados para acompanhar todas as solicitações feitas, incluindo detalhes sobre o status, resoluções anteriores e tempo de resposta.",
+    "buttonText": "Fale com o Suporte",
+    "headerColor": "#28a745",
+    "buttonColor": "#28a745",
+    "link": "/historicoChamado"
+  }
+]
