@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Container, Row, Col, Button, Table } from "react-bootstrap";
-import ListaPatrimonios from "../data/listaPatrimonio.json";
+import axios from 'axios';
 
 function Patrimonio() {
   const [formData, setFormData] = useState({
@@ -13,44 +13,62 @@ function Patrimonio() {
   });
 
   const [filteredPatrimonios, setFilteredPatrimonios] = useState([]);
-  const [listaChamados, setListaChamados] = useState([]); // Estado para armazenar a lista de chamados
+  const [listaChamados, setListaChamados] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value || "", // Assegura que o valor nunca seja undefined
+    }));
+  };
 
-    if (name === "patrimonio") {
-      if (value.length >= 1) {
-        const filtered = ListaPatrimonios.filter((item) =>
-          item.numero.startsWith(value)
-        );
-        setFilteredPatrimonios(filtered);
-      } else {
-        setFilteredPatrimonios([]);
-      }
+  const handlePatrimonioChange = (e) => {
+    const { value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      patrimonio: value || "", // Assegura que o valor nunca seja undefined
+    }));
+
+    if (value.length >= 4) {
+      axios.get(`http://localhost:3000/api/equipamentos/filtrar?query=${value}`)
+        .then(response => {
+          console.log('Dados recebidos da API:', response.data); // Verifica os dados recebidos
+          setFilteredPatrimonios(response.data); // Atualiza a lista de sugestões
+        })
+        .catch(error => {
+          console.error('Erro ao buscar patrimônios:', error);
+          setFilteredPatrimonios([]);
+        });
+    } else {
+      setFilteredPatrimonios([]);
     }
   };
 
-  const handleSelectPatrimonio = (numero) => {
-    const selectedPatrimonio = ListaPatrimonios.find(
-      (item) => item.numero === numero
+  const handleSelectPatrimonio = (patrimonio) => {
+    console.log('Número de patrimônio selecionado:', patrimonio); // Log do número selecionado
+    const selectedPatrimonio = filteredPatrimonios.find(
+      (item) => String(item.PATRIMONIO) === patrimonio
     );
+    console.log('Item de patrimônio selecionado:', selectedPatrimonio); // Log do item selecionado
+
     if (selectedPatrimonio) {
-      setFormData({
-        ...formData,
-        patrimonio: selectedPatrimonio.numero,
-        sala: selectedPatrimonio.sala,
-        equipamento: selectedPatrimonio.equipamento,
-      });
+      setFormData((prevState) => ({
+        ...prevState,
+        patrimonio: selectedPatrimonio.PATRIMONIO || "",
+        sala: selectedPatrimonio.SALA || "",
+        equipamento: selectedPatrimonio.DESCRICAO || "",
+      }));
+      console.log('Dados do formulário atualizados:', formData); // Verifica o estado atualizado
+    } else {
+      console.warn('Nenhum patrimônio correspondente encontrado');
     }
     setFilteredPatrimonios([]);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Adiciona os dados do formulário à lista de chamados
-    setListaChamados([...listaChamados, formData]);
-    // Limpa o formulário após a submissão
+    setListaChamados((prevState) => [...prevState, formData]);
     setFormData({
       equipamento: "",
       patrimonio: "",
@@ -73,17 +91,18 @@ function Patrimonio() {
                 type="text"
                 name="patrimonio"
                 placeholder="Digite o número do patrimônio"
-                value={formData.patrimonio}
-                onChange={handleChange}
+                value={formData.patrimonio || ""} // Certifique-se de que o valor está definido
+                onChange={handlePatrimonioChange}
                 required
                 autoComplete="off"
               />
+              {/* Mostrar lista de sugestões */}
               {filteredPatrimonios.length > 0 && (
                 <ul style={{ listStyleType: "none", padding: 0, marginTop: 0 }}>
-                  {filteredPatrimonios.map((item) => (
+                  {filteredPatrimonios.map((item, index) => (
                     <li
-                      key={item.id}
-                      onClick={() => handleSelectPatrimonio(item.numero)}
+                      key={index} // Use o índice como chave temporária
+                      onClick={() => handleSelectPatrimonio(String(item.PATRIMONIO))}
                       style={{
                         padding: "8px",
                         cursor: "pointer",
@@ -91,7 +110,7 @@ function Patrimonio() {
                         borderBottom: "1px solid #ccc",
                       }}
                     >
-                      {item.numero}
+                      {item.PATRIMONIO ? item.PATRIMONIO : "Número não disponível"} {/* Certifique-se de que a propriedade correta está sendo usada */}
                     </li>
                   ))}
                 </ul>
@@ -104,7 +123,8 @@ function Patrimonio() {
                 type="text"
                 name="equipamento"
                 placeholder="Equipamento"
-                value={formData.equipamento}
+                value={formData.equipamento || ""}
+                onChange={handleChange}
                 readOnly
               />
             </Form.Group>
@@ -115,7 +135,8 @@ function Patrimonio() {
                 type="text"
                 name="sala"
                 placeholder="Sala"
-                value={formData.sala}
+                value={formData.sala || ""}
+                onChange={handleChange}
                 readOnly
               />
             </Form.Group>
@@ -124,11 +145,6 @@ function Patrimonio() {
               Adicionar à Lista
             </Button>
           </Form>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-        <h2>Histórico de Busca</h2>
         </Col>
       </Row>
       <Row>
