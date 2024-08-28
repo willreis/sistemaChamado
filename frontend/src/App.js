@@ -5,6 +5,9 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+// Exemplo: Ajuste o caminho conforme necessário
+// import ProtectedRoute from './ProtectedRoutes';
+
 // Componentes
 import Navbar from "./components/Navbar";
 
@@ -14,6 +17,7 @@ import AbrirChamado from "./pages/AbrirChamado";
 import HistoricoChamado from "./pages/HistoricoChamado";
 import Patrimonio from "./pages/Patrimonio";
 import Login from "./pages/Login";
+import Faq from "./pages/Faq";
 
 //Rota Privada
 // import PrivateRoute from './components/PrivateRoute';
@@ -23,11 +27,13 @@ function App() {
     <Router>
       <Navbar />
       <Routes>
+        {/* <ProtectedRoute path="/admin" component={AdminPage} /> */}
         <Route path="/" element={<Home />} />
         <Route path="/abrirChamado" element={<AbrirChamado />} />
         <Route path="/historicoChamado" element={<HistoricoChamado />} />
         <Route path="/patrimonio" element={<Patrimonio />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/faq" element={<Faq />} />
         {/* <Route path="/dashboard" element={
           <PrivateRoute>
             <Dashboard />

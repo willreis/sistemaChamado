@@ -7,9 +7,6 @@ function Patrimonio() {
     equipamento: "",
     patrimonio: "",
     sala: "",
-    periodo: "",
-    prioridade: "",
-    descricao: "",
   });
 
   const [filteredPatrimonios, setFilteredPatrimonios] = useState([]);
@@ -57,7 +54,7 @@ function Patrimonio() {
         ...prevState,
         patrimonio: selectedPatrimonio.PATRIMONIO || "",
         sala: selectedPatrimonio.SALA || "",
-        equipamento: selectedPatrimonio.DESCRICAO || "",
+        equipamento: selectedPatrimonio.EQUIPAMENTO || "",
       }));
       console.log('Dados do formulário atualizados:', formData); // Verifica o estado atualizado
     } else {
@@ -70,6 +67,7 @@ function Patrimonio() {
     e.preventDefault();
     setListaChamados((prevState) => [...prevState, formData]);
     setFormData({
+      usuario: "Arioci",
       equipamento: "",
       patrimonio: "",
       sala: "",

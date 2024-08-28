@@ -1,38 +1,58 @@
-import React, { useState } from 'react';
+// frontend/src/components/ListarTodosChamados.js
+import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal } from 'react-bootstrap';
+import axios from 'axios';
 
-import listaChamados from "../data/listaChamado.json";
-
-function HistoricoChamado() {
-  // Estado para controlar o modal
+function ListarTodosChamados() {
+  const [chamados, setChamados] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedChamado, setSelectedChamado] = useState(null);
 
-  const handleCloseModal = () => setShowModal(false);
+  useEffect(() => {
+    // Fetch todos os chamados do backend
+    axios.get('http://localhost:3000/api/chamados')
+      .then(response => {
+        setChamados(response.data);
+      })
+      .catch(error => {
+        console.error('Erro ao buscar todos os chamados:', error);
+      });
+  }, []);
+
   const handleShowModal = (chamado) => {
     setSelectedChamado(chamado);
     setShowModal(true);
   };
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedChamado(null);
+  };
+
+  // Função para capitalizar a primeira letra
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   return (
     <div className="container mt-5">
-      <h2>Histórico de Chamados</h2>
+      <h2>Todos os Chamados</h2>
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>Nome do Solicitante</th>
             <th>Número do Chamado</th>
-            <th>Data e Hora</th>
+            <th>Data de Abertura</th>
+            <th>Prioridade</th>
             <th>Status</th>
-            <th>Ações</th>
+            <th>Ação</th>
           </tr>
         </thead>
         <tbody>
-          {listaChamados.map((chamado) => (
-            <tr key={chamado.id}>
-              <td>{chamado.nome}</td>
-              <td>{chamado.numero}</td>
-              <td>{chamado.dataHora}</td>
+          {chamados.map((chamado) => (
+            <tr key={chamado.ID}>
+              <td>{chamado.ID}</td>
+              <td>{new Date(chamado.hr_ab).toLocaleString()}</td>
+              <td>{capitalizeFirstLetter(chamado.prioridade)}</td>
               <td>{chamado.status}</td>
               <td>
                 <Button variant="primary" onClick={() => handleShowModal(chamado)}>
@@ -44,34 +64,32 @@ function HistoricoChamado() {
         </tbody>
       </Table>
 
-      {/* Modal para exibir detalhes do chamado */}
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Detalhes do Chamado</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedChamado && (
-            <>
-              <p><strong>Número do Chamado:</strong> {selectedChamado.numero}</p>
-              <p><strong>Nome do Solicitante:</strong> {selectedChamado.nome}</p>
-              <p><strong>Data e Hora:</strong> {selectedChamado.dataHora}</p>
-              <p><strong>Tipo de Equipamento:</strong> {selectedChamado.tipoEquipamento}</p>
-              <p><strong>Nº Patrimônio:</strong> {selectedChamado.patrimonio}</p>
-              <p><strong>Período de Trabalho:</strong> {selectedChamado.periodo}</p>
-              <p><strong>Prioridade:</strong> {selectedChamado.prioridade}</p>
-              <p><strong>Descrição do Problema:</strong> {selectedChamado.descricao}</p>
-              <p><strong>Status:</strong> {selectedChamado.status}</p>
-            </>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Fechar
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {/* Modal para mostrar detalhes do chamado */}
+      {selectedChamado && (
+        <Modal show={showModal} onHide={handleCloseModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Detalhes do Chamado #{selectedChamado.ID}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p><strong>Descrição:</strong> {selectedChamado.descri}</p>
+            <p><strong>Data de Abertura:</strong> {new Date(selectedChamado.hr_ab).toLocaleString()}</p>
+            <p><strong>Patrimônio ID:</strong> {selectedChamado.patrimonio_id}</p>
+            <p><strong>Prioridade:</strong> {capitalizeFirstLetter(selectedChamado.prioridade)}</p>
+            <p><strong>Status:</strong> {selectedChamado.status}</p>
+            <p><strong>Usuário que abriu:</strong> {selectedChamado.user_abr}</p>
+            {selectedChamado.user_atd && <p><strong>Usuário de Atendimento:</strong> {selectedChamado.user_atd}</p>}
+            {selectedChamado.hr_fech && <p><strong>Data de Fechamento:</strong> {new Date(selectedChamado.hr_fech).toLocaleString()}</p>}
+            {selectedChamado.solucao && <p><strong>Solução:</strong> {selectedChamado.solucao}</p>}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseModal}>
+              Fechar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </div>
   );
 }
 
-export default HistoricoChamado;
+export default ListarTodosChamados;

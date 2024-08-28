@@ -50,7 +50,7 @@ function Navbar() {
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link" to="/">
+                <NavLink className="nav-link" to="/faq">
                   <span class="material-symbols-outlined">folder_open</span>
                   <span className="textoNav">FAQ</span>
                 </NavLink>

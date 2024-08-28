@@ -13,10 +13,10 @@ app.use(express.json());
 
 // Configuração da conexão com o banco de dados MySQL
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '', // Substitua pela sua senha do MySQL
-  database: 'chamados'   // Certifique-se de que o banco de dados 'chamado' existe
+  host: '10.189.87.21',
+  user: 'consulta',
+  password: 'Senai123', // Substitua pela sua senha do MySQL
+  database: 'chamados'   // Certifique-se de que o banco de dados 'chamados' existe
 });
 
 // Conectar ao banco de dados
@@ -36,10 +36,8 @@ app.get('/api/equipamentos/filtrar', (req, res) => {
     return res.status(400).json({ error: 'Query deve ter pelo menos 4 caracteres' });
   }
 
-  const sql = `SELECT * FROM equipamento WHERE CAST(patrimonio AS CHAR) LIKE ?`;
-  const values = [`${query}%`]; // Busca que começa com o valor digitado
-
-  console.log('Consulta SQL:', sql, 'Valores:', values); // Log da consulta SQL
+  const sql = `SELECT * FROM equipamentos WHERE CAST(patrimonio AS CHAR) LIKE ?`;
+  const values = [`${query}%`];
 
   db.query(sql, values, (err, results) => {
     if (err) {
@@ -47,8 +45,41 @@ app.get('/api/equipamentos/filtrar', (req, res) => {
       return res.status(500).json({ error: 'Erro ao buscar equipamentos' });
     }
 
-    console.log('Resultados da consulta:', results); // Log dos resultados da consulta
     res.json(results);
+  });
+});
+
+// Rota para inserir Chamados
+app.post('/api/chamados/inserir', (req, res) => {
+  const { patrimonio, prioridade, descricao, usuario } = req.body;
+
+  const sql = `
+    INSERT INTO chamados (patrimonio_id, prioridade, descri, user_abr) 
+    VALUES (?, ?, ?, ?)
+  `;
+  
+  const values = [patrimonio, prioridade, descricao, usuario];
+
+  db.query(sql, values, (err, results) => {
+    if (err) {
+      console.error('Erro ao inserir chamado:', err);
+      return res.status(500).json({ error: 'Erro ao inserir chamado' });
+    }
+    res.status(200).json({ message: 'Chamado inserido com sucesso', id: results.insertId });
+  });
+});
+
+// Rota para obter todos os chamados
+app.get('/api/chamados', (req, res) => {
+  const sql = `SELECT * FROM chamados`;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Erro ao buscar todos os chamados:', err);
+      return res.status(500).json({ error: 'Erro ao buscar todos os chamados' });
+    }
+
+    res.json(results); // Enviar os resultados como resposta JSON
   });
 });
 
