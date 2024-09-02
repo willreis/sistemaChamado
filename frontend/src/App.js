@@ -18,6 +18,7 @@ import HistoricoChamado from "./pages/HistoricoChamado";
 import Patrimonio from "./pages/Patrimonio";
 import Login from "./pages/Login";
 import Faq from "./pages/Faq";
+import FaqCadastro from "./pages/CadastrarFaq";
 
 //Rota Privada
 // import PrivateRoute from './components/PrivateRoute';
@@ -34,6 +35,7 @@ function App() {
         <Route path="/patrimonio" element={<Patrimonio />} />
         <Route path="/login" element={<Login />} />
         <Route path="/faq" element={<Faq />} />
+        <Route path="/cadastrarFaq" element={<FaqCadastro />} />
         {/* <Route path="/dashboard" element={
           <PrivateRoute>
             <Dashboard />

@@ -116,6 +116,19 @@ function Patrimonio() {
             </Form.Group>
 
             <Form.Group controlId="formEquipamento">
+              <Form.Label>Nº Série (ajustar no banco esse campo)</Form.Label>
+              <Form.Control
+                type="text"
+                name="equipamento"
+                placeholder="Equipamento"
+                value={formData.equipamento || ""}
+                onChange={handleChange}
+                readOnly
+              />
+            </Form.Group>
+
+
+            <Form.Group controlId="formEquipamento">
               <Form.Label>Tipo de Equipamento</Form.Label>
               <Form.Control
                 type="text"
@@ -151,6 +164,7 @@ function Patrimonio() {
             <thead>
               <tr>
                 <th>Nº Patrimônio</th>
+                <th>Nº Série</th>
                 <th>Equipamento</th>
                 <th>Sala</th>
               </tr>
@@ -158,6 +172,7 @@ function Patrimonio() {
             <tbody>
               {listaChamados.map((chamado, index) => (
                 <tr key={index}>
+                  <td>{chamado.patrimonio}</td>
                   <td>{chamado.patrimonio}</td>
                   <td>{chamado.equipamento}</td>
                   <td>{chamado.sala}</td>

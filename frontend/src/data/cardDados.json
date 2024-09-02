@@ -14,9 +14,49 @@
     "headerIcon": "folder_open",
     "title": "Histórico de Chamado",
     "text": "Visualize o histórico de chamados para acompanhar todas as solicitações feitas, incluindo detalhes sobre o status, resoluções anteriores e tempo de resposta.",
-    "buttonText": "Fale com o Suporte",
+    "buttonText": "Ver Histórico",
     "headerColor": "#28a745",
     "buttonColor": "#28a745",
     "link": "/historicoChamado"
+  },
+  {
+    "id": 3,
+    "headerIcon": "question_answer",
+    "title": "FAQ",
+    "text": "Encontre respostas para as perguntas mais frequentes sobre procedimentos técnicos e outros tópicos relacionados.",
+    "buttonText": "Ver FAQs",
+    "headerColor": "#ffc107",
+    "buttonColor": "#ffc107",
+    "link": "/faq"
+  },
+  {
+    "id": 4,
+    "headerIcon": "add_circle",
+    "title": "Cadastrar FAQ",
+    "text": "Use esta seção para cadastrar novas perguntas frequentes que possam ajudar outros usuários.",
+    "buttonText": "Cadastrar FAQ",
+    "headerColor": "#17a2b8",
+    "buttonColor": "#17a2b8",
+    "link": "/cadastrar-faq"
+  },
+  {
+    "id": 5,
+    "headerIcon": "search",
+    "title": "Consultar FAQ",
+    "text": "Consulte as perguntas frequentes cadastradas para encontrar respostas e soluções para questões técnicas e administrativas.",
+    "buttonText": "Consultar FAQ",
+    "headerColor": "#6c757d",
+    "buttonColor": "#6c757d",
+    "link": "/consultar-faq"
+  },
+  {
+    "id": 6,
+    "headerIcon": "folder_open",
+    "title": "Patrimônio",
+    "text": "Gerencie e consulte os registros de patrimônio para manter o controle de todos os ativos da organização.",
+    "buttonText": "Ver Patrimônio",
+    "headerColor": "#343a40",
+    "buttonColor": "#343a40",
+    "link": "/patrimonio"
   }
 ]

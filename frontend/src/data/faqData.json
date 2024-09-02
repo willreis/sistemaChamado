@@ -1,0 +1,18 @@
+[
+    {
+      "id": 1,
+      "title": "Como posso abrir um chamado?",
+      "text": "Para abrir um chamado, vá para a página de abertura de chamados e preencha o formulário com os detalhes necessários."
+    },
+    {
+      "id": 2,
+      "title": "O que devo fazer se esquecer minha senha?",
+      "text": "Se você esquecer sua senha, clique em 'Esqueceu a senha?' na página de login e siga as instruções para redefinir sua senha."
+    },
+    {
+      "id": 3,
+      "title": "Como posso acompanhar o status do meu chamado?",
+      "text": "Você pode acompanhar o status do seu chamado acessando a página de histórico de chamados e visualizando a lista de chamados abertos."
+    }
+  ]
+  

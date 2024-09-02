@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
+import { Dropdown } from "react-bootstrap";
 import "../css/navbar.css";
 import LogoSenai from "../img/logoSenai.png";
 import ListaUsuario from "../components/Usuarios";
@@ -27,43 +28,55 @@ function Navbar() {
             <ul className="navbar-nav">
               <li className="nav-item">
                 <NavLink className="nav-link" to="/" exact>
-                  <span class="material-symbols-outlined">Home</span>
+                  <span className="material-symbols-outlined">home</span>
                   <span className="textoNav">Home</span>
                 </NavLink>
               </li>
               <li className="nav-item">
                 <NavLink className="nav-link" to="/abrirChamado">
-                  <span class="material-symbols-outlined">support_agent</span>
+                  <span className="material-symbols-outlined">support_agent</span>
                   <span className="textoNav">Abrir Chamado</span>
                 </NavLink>
               </li>
               <li className="nav-item">
                 <NavLink className="nav-link" to="/historicoChamado">
-                  <span class="material-symbols-outlined">folder_open</span>
+                  <span className="material-symbols-outlined">folder_open</span>
                   <span className="textoNav">Histórico de Chamado</span>
                 </NavLink>
               </li>
               <li className="nav-item">
                 <NavLink className="nav-link" to="/">
-                  <span class="material-symbols-outlined">folder_open</span>
+                  <span className="material-symbols-outlined">folder_open</span>
                   <span className="textoNav">Lista de Software</span>
                 </NavLink>
               </li>
-              <li className="nav-item">
-                <NavLink className="nav-link" to="/faq">
-                  <span class="material-symbols-outlined">folder_open</span>
+
+              {/* Menu Dropdown para FAQ */}
+              <Dropdown className="nav-item">
+                <Dropdown.Toggle className="nav-link btn btn-link" id="dropdown-basic">
+                  <span className="material-symbols-outlined">folder_open</span>
                   <span className="textoNav">FAQ</span>
-                </NavLink>
-              </li>
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item as={NavLink} to="/cadastrarFaq">
+                    Cadastrar FAQ
+                  </Dropdown.Item>
+                  <Dropdown.Item as={NavLink} to="/faq">
+                    Consultar FAQ
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+
               <li className="nav-item">
                 <NavLink className="nav-link" to="/patrimonio">
-                  <span class="material-symbols-outlined">folder_open</span>
-                  <span className="textoNav">Patrimonio</span>
+                  <span className="material-symbols-outlined">folder_open</span>
+                  <span className="textoNav">Patrimônio</span>
                 </NavLink>
               </li>
               <li className="nav-item">
                 <NavLink className="nav-link" to="/login">
-                  <span class="material-symbols-outlined">logout</span>
+                  <span className="material-symbols-outlined">logout</span>
                   <span className="textoNav">Deslogar</span>
                 </NavLink>
               </li>

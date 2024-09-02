@@ -83,6 +83,40 @@ app.get('/api/chamados', (req, res) => {
   });
 });
 
+// Endpoint para buscar FAQs
+app.get('/api/faqs', (req, res) => {
+  const sql = 'SELECT * FROM faqs';
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Erro ao buscar FAQs:', err);
+      res.status(500).json({ error: 'Erro ao buscar FAQs' });
+      return;
+    }
+    res.json(results);
+  });
+});
+
+// Rota para cadastrar uma nova FAQ
+app.post('/api/faqs/cadastrar', (req, res) => {
+  const { titulo, texto } = req.body;
+
+  const sql = `
+    INSERT INTO faqs (titulo, texto) 
+    VALUES (?, ?)
+  `;
+  
+  const values = [titulo, texto];
+
+  db.query(sql, values, (err, results) => {
+    if (err) {
+      console.error('Erro ao cadastrar FAQ:', err);
+      return res.status(500).json({ error: 'Erro ao cadastrar FAQ' });
+    }
+    res.status(200).json({ message: 'FAQ cadastrada com sucesso', id: results.insertId });
+  });
+});
+
 // Iniciar o servidor
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
