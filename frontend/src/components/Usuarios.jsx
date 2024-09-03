@@ -2,20 +2,17 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-
-import UsuarioDados from "../data/loginUser.json";
+import { useAuth } from "../context/AuthContext"; // Importa o contexto de autenticação
 
 function Usuarios() {
+  const { userName } = useAuth(); // Obtém o nome do usuário do contexto
+
   return (
     <Container>
       <Row>
         <Col>
           <div className="nomeLogado">
-            {UsuarioDados.map((usuarios) => (
-              <h3>
-                Olá <span key={usuarios.id}>{usuarios.nome}</span>
-              </h3>
-            ))}
+            <h3>Olá, {userName}</h3> {/* Exibe o nome do usuário */}
           </div>
         </Col>
       </Row>

@@ -1,22 +1,19 @@
-// backend/server.js
-
 const express = require('express');
 const cors = require('cors');
+const passport = require('passport');
+const LdapStrategy = require('passport-ldapauth');
+const session = require('express-session');
 const mysql = require('mysql2');
 
 const app = express();
 const port = 3000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-
 // Configuração da conexão com o banco de dados MySQL
 const db = mysql.createConnection({
   host: '10.189.87.21',
   user: 'consulta',
-  password: 'Senai123', // Substitua pela sua senha do MySQL
-  database: 'chamados'   // Certifique-se de que o banco de dados 'chamados' existe
+  password: process.env.DB_PASSWORD || 'Senai123', // Substitua por variáveis de ambiente para segurança
+  database: 'chamados' // Certifique-se de que o banco de dados 'chamados' existe
 });
 
 // Conectar ao banco de dados
@@ -27,6 +24,83 @@ db.connect((err) => {
   }
   console.log('Conectado ao banco de dados MySQL');
 });
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'sJYMmuCB2Z187XneUuaOVYTVUlxEOb2K94tFZy370HjOY7T7aiCKvwhNQpQBYL9e', // Use variáveis de ambiente
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // Defina como true se estiver usando HTTPS
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Configurações LDAP
+const ldapOptions = {
+  server: {
+    url: 'ldap://10.189.87.7:389', // IP do servidor AD
+    bindDN: 'cn=script,ou=Funcionarios,ou=Usuarios123,dc=educ123,dc=sp,dc=senai,dc=br', // DN para bind
+    bindCredentials: process.env.LDAP_PASSWORD || '7GFGOy4ATCiqW9c86eStgCe0RA9BgA', // Use variáveis de ambiente para senhas
+    searchBase: 'ou=Funcionarios,ou=Usuarios123,dc=educ123,dc=sp,dc=senai,dc=br', // Base de busca
+    searchFilter: '(sAMAccountName={{username}})', // Filtro de busca de usuário
+    groupSearchBase: 'ou=Funcionarios,ou=Usuarios123,dc=educ123,dc=sp,dc=senai,dc=br', // Base de busca de grupos
+    groupSearchFilter: '(&(cn=Professores)(member={{dn}}))' // Filtro de grupo específico
+  }
+};
+
+passport.use(new LdapStrategy(ldapOptions));
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
+// Rota de Login
+app.post('/api/login', passport.authenticate('ldapauth', { session: true }), (req, res) => {
+  res.send({ message: 'Autenticado com sucesso', user: req.user });
+});
+
+// Rota de Logout
+app.post('/api/logout', (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Erro ao realizar logout' });
+    }
+    res.send({ message: 'Logout realizado com sucesso' });
+  });
+});
+
+// Middleware para verificar se o usuário está autenticado
+const isAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.status(401).send('Você precisa estar autenticado para acessar esta rota');
+};
+
+// Middleware para verificar grupos de usuários
+const checkGroup = (groupsAllowed) => (req, res, next) => {
+  const userGroups = req.user._groups || [];
+  const hasAccess = groupsAllowed.some(group => userGroups.includes(group));
+
+  if (hasAccess) {
+    return next();
+  }
+  res.status(403).send('Acesso negado');
+};
+
+// Exemplo de rota protegida por autenticação e grupo
+app.get('/api/protected', isAuthenticated, checkGroup(['CN=Professores,OU=Grupos,DC=sp,DC=senai,DC=br', 'CN=Grupos,OU=Grupos,DC=sp,DC=senai,DC=br']), (req, res) => {
+  res.send('Você tem acesso a esta rota!');
+});
+
+// Rotas para funções específicas
 
 // Rota para filtrar patrimônios
 app.get('/api/equipamentos/filtrar', (req, res) => {
@@ -79,7 +153,7 @@ app.get('/api/chamados', (req, res) => {
       return res.status(500).json({ error: 'Erro ao buscar todos os chamados' });
     }
 
-    res.json(results); // Enviar os resultados como resposta JSON
+    res.json(results);
   });
 });
 
