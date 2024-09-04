@@ -5,6 +5,7 @@ import "../css/navbar.css";
 import LogoSenai from "../img/logoSenai.png";
 import ListaUsuario from "../components/Usuarios";
 import { useAuth } from "../context/AuthContext"; // Importa o contexto de autenticação
+import { toast } from 'react-toastify';
 
 function Navbar() {
   const { isAuthenticated, logout } = useAuth(); // Obtém o estado de autenticação e a função de logout
@@ -12,6 +13,7 @@ function Navbar() {
 
   const handleLogout = () => {
     logout(); // Chama a função de logout do contexto
+    toast.success('Deslogado com sucesso!');
     navigate("/login"); // Redireciona para a página de login
   };
 

@@ -20,16 +20,19 @@ import Patrimonio from "./pages/Patrimonio";
 import Login from "./pages/Login";
 import Faq from "./pages/Faq";
 import FaqCadastro from "./pages/CadastrarFaq";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
+        <ToastContainer />
         <Navbar />
         <Routes>
           {/* Rotas abertas */}
           <Route path="/login" element={<Login />} />
-          
+
           {/* Rotas protegidas */}
           <Route
             path="/"

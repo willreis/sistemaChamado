@@ -1,17 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import axios from 'axios';
-import Swal from 'sweetalert2'; // Importa o SweetAlert2
+import axios from "axios";
+import Swal from "sweetalert2"; // Importa o SweetAlert2
 
 function AbrirChamado() {
+  const [pegaSn, setPegaSn] = useState("");
+
+  // useEffect para buscar o grupo do AD do Local Storage
+  useEffect(() => {
+    const storedUserData = localStorage.getItem("userData");
+    if (storedUserData) {
+      const parsedUserData = JSON.parse(storedUserData);
+      console.log("Dados pegos", parsedUserData.user["sAMAccountName"]);
+
+      if (parsedUserData.user["sAMAccountName"]) {
+        // Armazena o valor da sAMAccountName no estado
+        setPegaSn(parsedUserData.user["sAMAccountName"]);
+      }
+    }
+  }, []);
+
   const [formData, setFormData] = useState({
-    usuario: "Arioci",
+    usuario: "",
     equipamento: "",
     patrimonio: "",
     sala: "",
     prioridade: "",
     descricao: "",
   });
+
+  // useEffect para atualizar o formData quando o pegaSn for alterado
+  useEffect(() => {
+    if (pegaSn) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        usuario: pegaSn, // Atualiza o campo 'usuario' com o valor de pegaSn
+      }));
+    }
+  }, [pegaSn]);
 
   const [filteredPatrimonios, setFilteredPatrimonios] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -23,8 +49,9 @@ function AbrirChamado() {
     if (name === "patrimonio") {
       if (value.length >= 1) {
         // Fazer requisição ao backend para buscar os patrimônios que começam com o valor digitado
-        axios.get(`http://localhost:3000/api/equipamentos/filtrar?query=${value}`)
-          .then(response => {
+        axios
+          .get(`http://localhost:3000/api/equipamentos/filtrar?query=${value}`)
+          .then((response) => {
             const filtered = response.data;
 
             if (filtered.length === 0) {
@@ -35,8 +62,8 @@ function AbrirChamado() {
               setErrorMessage("");
             }
           })
-          .catch(error => {
-            console.error('Erro ao buscar patrimônios:', error);
+          .catch((error) => {
+            console.error("Erro ao buscar patrimônios:", error);
             setErrorMessage("Erro ao buscar patrimônios");
           });
       } else {
@@ -65,12 +92,10 @@ function AbrirChamado() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Envia os dados para o backend
-    axios.post('http://localhost:3000/api/chamados/inserir', formData)
+    // Envia os dados para o backend (substitua pela URL correta)
+    axios.post("http://localhost:3000/api/chamados/inserir", formData)
       .then(response => {
         console.log('Chamado inserido com sucesso:', response.data);
-
-        // Exibir o alerta SweetAlert2 com o ID do chamado
         Swal.fire({
           title: 'Chamado Gerado!',
           text: `Número do Chamado: ${response.data.id}`,
@@ -80,7 +105,7 @@ function AbrirChamado() {
 
         // Limpar o formulário após submissão bem-sucedida
         setFormData({
-          usuario: "Arioci",
+          usuario: pegaSn, // Mantém o pegaSn após limpar o formulário
           equipamento: "",
           patrimonio: "",
           sala: "",
@@ -90,8 +115,6 @@ function AbrirChamado() {
       })
       .catch(error => {
         console.error('Erro ao inserir chamado:', error);
-        
-        // Exibir alerta de erro
         Swal.fire({
           title: 'Erro!',
           text: 'Não foi possível gerar o chamado. Tente novamente.',
@@ -109,6 +132,19 @@ function AbrirChamado() {
           <Form onSubmit={handleSubmit}>
             <Row>
               <Col md={6}>
+                <Form.Group controlId="formUsuario" className="mt-3">
+                  <Form.Label>Usuário</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="usuario"
+                    value={formData.usuario} // Exibe o valor do usuário no input
+                    readOnly
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
                 <Form.Group controlId="formPatrimonio" className="mt-3">
                   <Form.Label>Nº Patrimônio</Form.Label>
                   <Form.Control
@@ -119,17 +155,25 @@ function AbrirChamado() {
                     onChange={handleChange}
                     required
                     autoComplete="off"
-                    style={{ borderColor: errorMessage ? 'red' : '' }}
+                    style={{ borderColor: errorMessage ? "red" : "" }}
                   />
                   {errorMessage && (
-                    <small style={{ color: 'red' }}>{errorMessage}</small>
+                    <small style={{ color: "red" }}>{errorMessage}</small>
                   )}
                   {filteredPatrimonios.length > 0 && (
-                    <ul style={{ listStyleType: "none", padding: 0, marginTop: 0 }}>
+                    <ul
+                      style={{
+                        listStyleType: "none",
+                        padding: 0,
+                        marginTop: 0,
+                      }}
+                    >
                       {filteredPatrimonios.map((item) => (
                         <li
                           key={item.PATRIMONIO}
-                          onClick={() => handleSelectPatrimonio(item.PATRIMONIO)}
+                          onClick={() =>
+                            handleSelectPatrimonio(item.PATRIMONIO)
+                          }
                           style={{
                             padding: "8px",
                             cursor: "pointer",
@@ -158,7 +202,7 @@ function AbrirChamado() {
                 </Form.Group>
               </Col>
             </Row>
-            
+
             <Row>
               <Col md={6}>
                 <Form.Group controlId="formSala" className="mt-3">
@@ -208,10 +252,10 @@ function AbrirChamado() {
               </Col>
             </Row>
 
-            <Button 
-              variant="primary" 
-              type="submit" 
-              className="mt-4" 
+            <Button
+              variant="primary"
+              type="submit"
+              className="mt-4"
               disabled={!formData.patrimonio || !!errorMessage} // Desabilita se não houver patrimônio ou houver erro
             >
               Gerar Chamado

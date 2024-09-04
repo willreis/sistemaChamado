@@ -12,16 +12,16 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
+  const [dados, setDados] = useState()
   const { login } = useAuth(); // Usa a função login do contexto
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
       .post("http://localhost:3000/api/login", { username, password })
       .then((response) => {
         console.log("Login bem-sucedido:", response.data);
-
+        const pegaDados = localStorage.getItem(response.data);
         // Passa o usuário logado para a função login do contexto
         login(response.data.user); // Passa o objeto de usuário completo
         
