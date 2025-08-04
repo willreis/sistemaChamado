@@ -10,10 +10,10 @@ const port = 3000;
 
 // Configuração da conexão com o banco de dados MySQL
 const db = mysql.createConnection({
-  host: '10.189.87.21',
-  user: 'consulta',
-  password: process.env.DB_PASSWORD || 'Senai123', // Substitua por variáveis de ambiente para segurança
-  database: 'chamados' // Certifique-se de que o banco de dados 'chamados' existe
+  host: '#####',
+  user: '#####',
+  password: process.env.DB_PASSWORD || '#####', // Substitua por variáveis de ambiente para segurança
+  database: '#####' // Certifique-se de que o banco de dados 'chamados' existe
 });
 
 // Conectar ao banco de dados
@@ -41,13 +41,13 @@ app.use(passport.session());
 // Configurações LDAP
 const ldapOptions = {
   server: {
-    url: 'ldap://10.189.87.7:389', // IP do servidor AD
-    bindDN: 'cn=script,ou=Funcionarios,ou=Usuarios123,dc=educ123,dc=sp,dc=senai,dc=br', // DN para bind
-    bindCredentials: process.env.LDAP_PASSWORD || '7GFGOy4ATCiqW9c86eStgCe0RA9BgA', // Use variáveis de ambiente para senhas
-    searchBase: 'ou=Funcionarios,ou=Usuarios123,dc=educ123,dc=sp,dc=senai,dc=br', // Base de busca
+    url: '#####', // IP do servidor AD
+    bindDN: '#####', // DN para bind
+    bindCredentials: process.env.LDAP_PASSWORD || '#####', // Use variáveis de ambiente para senhas
+    searchBase: '######', // Base de busca
     searchFilter: '(sAMAccountName={{username}})', // Filtro de busca de usuário
-    groupSearchBase: 'ou=Funcionarios,ou=Usuarios123,dc=educ123,dc=sp,dc=senai,dc=br', // Base de busca de grupos
-    groupSearchFilter: '(&(cn=Professores)(member={{dn}}))' // Filtro de grupo específico
+    groupSearchBase: '######', // Base de busca de grupos
+    groupSearchFilter: '#####' // Filtro de grupo específico
   }
 };
 
